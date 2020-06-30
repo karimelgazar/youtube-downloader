@@ -31,7 +31,7 @@ Check "original_script.py" For More Info About Code
 # from pytube import Playlist
 from pytube import YouTube
 from pytube.helpers import safe_filename
-from youtube_dl import YoutubeDL, utils
+from youtube_dl import YoutubeDL
 import os
 import sys
 from subprocess import Popen as pop
@@ -269,7 +269,6 @@ def download_playlist(url):
             title = video.get('title', None)
             # print(title)
 
-        # except youtube_dl.utils.DownloadError as ex:
         except:
             continue
 
@@ -325,7 +324,6 @@ def download_channel(url):
             title = video.get('title', None)
             # print(title)
 
-        # except youtube_dl.utils.DownloadError as ex:
         except:
             continue
 
