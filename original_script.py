@@ -36,7 +36,6 @@ NOTE
 """
 
 
-# from pytube import Playlist
 from pytube import YouTube
 from pytube.helpers import safe_filename
 from youtube_dl import YoutubeDL
@@ -59,7 +58,7 @@ RES_TO_NUM = {
     "480p": 4
 }
 
-NUM_TO_RES = {k: v*2 for (k, v) in RES_TO_NUM.items()}
+NUM_TO_RES = {v: k for (k, v) in RES_TO_NUM.items()}
 SETTINGS_FILE = os.path.join(sys.path[0], "settings.txt")
 with open(SETTINGS_FILE) as file:
     IDM_DIRECTORY, DOWNLOAD_FOLDER, CHOOSE_TO_DOWNLOAD_VIDEO, VIDEO_QUALITY = [
@@ -355,7 +354,7 @@ def check_link_and_download(url):
 #!#######################################################
 
 
-check_link_and_download(
-    channel)
+# check_link_and_download(
+#     channel)
 # "https://www.youtube.com/playlist?list=PLiWvewi88jEIH9fCjxdqFdLESqt9L2lu3")
 # "https://www.youtube.com/watch?v=xCF6pjIWYAQ&list=PLiWvewi88jEIH9fCjxdqFdLESqt9L2lu3&index=3&t=0s")

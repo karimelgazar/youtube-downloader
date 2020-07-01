@@ -28,7 +28,6 @@ Check "original_script.py" For More Info About Code
 """
 
 
-# from pytube import Playlist
 from pytube import YouTube
 from pytube.helpers import safe_filename
 from youtube_dl import YoutubeDL
@@ -64,7 +63,7 @@ RES_TO_NUM = {
     "480p": 4
 }
 
-NUM_TO_RES = {k: v*2 for (k, v) in RES_TO_NUM.items()}
+NUM_TO_RES = {v: k for (k, v) in RES_TO_NUM.items()}
 SETTINGS_FILE = os.path.join(sys.path[0], "settings.txt")
 with open(SETTINGS_FILE) as file:
     IDM_DIRECTORY, DOWNLOAD_FOLDER, CHOOSE_TO_DOWNLOAD_VIDEO, VIDEO_QUALITY = [
