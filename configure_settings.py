@@ -7,6 +7,7 @@ print(SCRIPT_PATH)
 
 
 LINE_SEP = '=' * 50
+MAX_QUALITY = "max"
 
 
 def pick_download_folder():
@@ -120,6 +121,7 @@ def choose_video_quality():
     quality = quality_dict.get(num)
     if quality == None:
         print("\nOK I\'ll download it at maximum quality.".title())
+        quality = MAX_QUALITY
     else:
         print('\nOK I\'ll download it at: %s.' % quality)
 
@@ -140,11 +142,11 @@ with open(os.path.join(SCRIPT_PATH, "settings.txt"), 'w') as txt:
         sep="\n",
         file=txt)
 
-    video_or_audio = choose_download_video_or_not()
-    txt.write(str(video_or_audio) + "\n")
+    you_want_video = choose_download_video_or_not()
+    txt.write(str(you_want_video) + "\n")
 
-    quality = "max"
-    if video_or_audio:
+    quality = "none"
+    if you_want_video:
         quality = choose_video_quality()
 
-    txt.write(quality + "\n")
+    txt.write(quality)
