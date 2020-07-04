@@ -356,7 +356,7 @@ def get_link_from_terminal():
     return passed_link.strip()
 
 
-def check_link_and_download(url):
+def check_link_and_download():
     url = get_link_from_terminal()
     link_id = type_of(url)
 
