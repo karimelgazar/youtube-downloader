@@ -208,7 +208,7 @@ def download_with_IDM(direct_link=None, file_name=None,
 
         print(COMMAND, start, sep='\n')
         print('='*50)
-        # pop(COMMAND, shell=True)  # download file
+        pop(COMMAND, shell=True)  # download file
     except:
         pass
 
