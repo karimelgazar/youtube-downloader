@@ -41,8 +41,10 @@ from pytube.helpers import safe_filename
 from youtube_dl import YoutubeDL
 import os
 import sys
+import re
 from subprocess import Popen as pop
 from pprint import pprint
+import argparse
 
 ID_INVALID = -1
 ID_VIDEO = 0
@@ -51,6 +53,8 @@ ID_CHANNEL = 2
 BASE_LINK = "www.youtube.com/"
 DEFAULT_VIDEO_TITLE = "YouTube.mp4"
 DEFAULT_SOUND_TITLE = "Sound.mp3"
+UNKNOWN_NAME = "unknown_name"
+NANES_FILE = "names.txt"
 RES_TO_NUM = {
     "144p": 1,
     "240p": 2,
@@ -73,15 +77,19 @@ CHOOSE_TO_DOWNLOAD_VIDEO = (CHOOSE_TO_DOWNLOAD_VIDEO == "True")
 # and we will use this path in terminal
 IDM_DIRECTORY = f"\"{IDM_DIRECTORY}\""
 
+#!========================================================================
+# JUST FOR TESTING
+# --------------------
 
 # p1 = "https://www.youtube.com/playlist?list=PLO1D3YWS7ep3eLiV54GiyRPVJ3XLtjEcx"
 # p2 = "https://www.youtube.com/playlist?list=PLO1D3YWS7ep1u30a-rPHnTBMn7duXn9lI"
 # p3 = "https://www.youtube.com/playlist?list=PL5tVJtjoxKzp6E5AiMdnL8rFqg5X0iDWX"
 # me = "https://www.youtube.com/watch?v=yGrg8IKjrLU"
 # pm = "https://www.youtube.com/watch?v=yGrg8IKjrLU&list=PLO1D3YWS7ep0yi84ANyK4yJMDmMon_j5t&index=6&t=75s"
-# x = "https://www.youtube.com/watch?v=XA6bS8TyN10"
+x = "https://www.youtube.com/watch?v=XA6bS8TyN10"
 # duck = "https://www.youtube.com/watch?v=nHc288IPFzk&list=PL_90hJucBAcPmFxcbTea81OKGkQevH2F9&index=3"
-# channel = "https://www.youtube.com/user/thesmallglories/videos"
+channel = "https://www.youtube.com/user/thesmallglories/videos"
+ar_channel = "https://www.youtube.com/channel/UCxn_DMPZ37eSIXrVxBUc6AA/videos"
 
 
 #!========================================================================
@@ -111,7 +119,7 @@ def isEnglish(s):
 def check_and_file_ext(title):
     # return the default title because IDM
     # doesn't accept unicode letters like arabic letters
-    if title == None or (not isEnglish(title)):
+    if title == UNKNOWN_NAME or (not isEnglish(title)):
         if CHOOSE_TO_DOWNLOAD_VIDEO:
             return DEFAULT_VIDEO_TITLE
         else:
@@ -121,11 +129,19 @@ def check_and_file_ext(title):
     # which are not allowed in ntfs (Windows) filenames.
     # Like "#", "?", ">", ...etc
     # see "safe_filename()" method for more INFO.
-    title = safe_filename(title)
     if CHOOSE_TO_DOWNLOAD_VIDEO:
         return title + ".mp4"
 
     return title + ".mp3"
+
+
+def mkdir_and_chdir(name):
+    "make a new folder is not exist and change working directory to it"
+
+    if not os.path.exists(name):
+        os.mkdir(name)
+
+    os.chdir(name)
 
 
 def get_file_name_from(url):
@@ -137,8 +153,20 @@ def get_file_name_from(url):
         # don't print log messages in stdout
             "quiet": True}) as ydl:
         info_dict = ydl.extract_info(url, download=False)
-        title = info_dict.get('title', None)
-        return check_and_file_ext(title)
+        title = info_dict.get('title', UNKNOWN_NAME)
+
+        # name on youtube without file extension
+        title = safe_filename(title)
+        # valid name to pass to IDM
+        valid_name = check_and_file_ext(title)
+        # name on youtube with file extension
+        original_name = title + valid_name[-4:] + "\n"
+
+        mkdir_and_chdir(title)
+        with open(NANES_FILE, 'w') as file:
+            file.write(original_name)
+
+        return valid_name
 
 
 def download_with_IDM(direct_link=None, file_name=None,
@@ -229,6 +257,35 @@ def get_direct_link(url):
     return stream.url
 
 
+def download_multiple_videos(pl_ch_object, name):
+    with open(NANES_FILE, "w") as file:
+        for i, video in enumerate(pl_ch_object.get('entries')):
+            link_video, title = None, UNKNOWN_NAME
+            try:
+                link_video = "https://www.youtube.com/watch?v=" + \
+                    video.get('id')
+                title = video.get('title', UNKNOWN_NAME)
+                # print(title)
+
+            except:
+                continue
+
+            title = safe_filename(title)
+            download_link = get_direct_link(link_video)
+            valid_name = str(i + 1).zfill(2) + "-" + check_and_file_ext(title)
+            original_name = str(i + 1).zfill(2) + "-" + \
+                title + valid_name[-4:] + "\n"
+
+            file.write(original_name)
+            download_with_IDM(direct_link=download_link,
+                              file_name=valid_name,
+                              download_path=os.path.join(DOWNLOAD_FOLDER,
+                                                         name))
+
+    # start the queue in IDM
+    download_with_IDM(start=True)
+
+
 def download_playlist(url):
     ydl = YoutubeDL({
         # this line is VERY IMPORTANT because if there's private viedeos
@@ -247,31 +304,8 @@ def download_playlist(url):
         )
 
     name_playlist = safe_filename(playlist.get('title'))
-    if not os.path.exists(name_playlist):
-        os.mkdir(name_playlist)
-
-    os.chdir(name_playlist)
-
-    for i, video in enumerate(playlist.get('entries')):
-        link_video, title = None, None
-        try:
-            link_video = "https://www.youtube.com/watch?v=" + video.get('id')
-            title = video.get('title', None)
-            # print(title)
-
-        except:
-            continue
-
-        download_link = get_direct_link(link_video)
-        name = str(i + 1).zfill(2) + "-" + check_and_file_ext(title)
-
-        download_with_IDM(direct_link=download_link,
-                          file_name=name,
-                          download_path=os.path.join(DOWNLOAD_FOLDER,
-                                                     name_playlist))
-
-    # start the queue in IDM
-    download_with_IDM(start=True)
+    mkdir_and_chdir(name_playlist)
+    download_multiple_videos(playlist, name_playlist)
 
 
 def download_channel(url):
@@ -300,35 +334,30 @@ def download_channel(url):
     name_channel = safe_filename(channel.get("title").split(' from ')[-1])
     print(name_channel)
     print("="*50)
+    mkdir_and_chdir(name_channel)
+    download_multiple_videos(channel, name_channel)
 
-    if not os.path.exists(name_channel):
-        os.mkdir(name_channel)
 
-    os.chdir(name_channel)
+def get_link_from_terminal():
+    """
+    get the link passed in the terminal
+    """
 
-    for i, video in enumerate(channel.get('entries')):
-        link_video, title = None, None
-        try:
-            link_video = "https://www.youtube.com/watch?v=" + video.get('id')
-            title = video.get('title', None)
-            # print(title)
+    # ? تجهيز الترمينال
+    parser = argparse.ArgumentParser()
+    arg_help = '''
+            The Link To The Video, Playlist, Or Channel'''
 
-        except:
-            continue
+    parser.add_argument('link',
+                        help=arg_help)
 
-        download_link = get_direct_link(link_video)
-        name = str(i + 1).zfill(2) + "-" + check_and_file_ext(title)
+    passed_link = parser.parse_args().link
 
-        download_with_IDM(direct_link=download_link,
-                          file_name=name,
-                          download_path=os.path.join(DOWNLOAD_FOLDER,
-                                                     name_channel))
-
-    # start the queue in IDM
-    download_with_IDM(start=True)
+    return passed_link.strip()
 
 
 def check_link_and_download(url):
+    url = get_link_from_terminal()
     link_id = type_of(url)
 
     if link_id == ID_INVALID:
@@ -354,7 +383,8 @@ def check_link_and_download(url):
 #!#######################################################
 
 
-# check_link_and_download(
-#     channel)
+check_link_and_download()
+#     # x)
+# channel)
 # "https://www.youtube.com/playlist?list=PLiWvewi88jEIH9fCjxdqFdLESqt9L2lu3")
 # "https://www.youtube.com/watch?v=xCF6pjIWYAQ&list=PLiWvewi88jEIH9fCjxdqFdLESqt9L2lu3&index=3&t=0s")
