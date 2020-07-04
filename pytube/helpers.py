@@ -70,6 +70,7 @@ def safe_filename(s: str, max_length: int = 255) -> str:
         r"\<",
         r"\>",
         r"\?",
+        r"؟",
         r"\\",
         r"\^",
         r"\|",
