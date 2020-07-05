@@ -15,6 +15,7 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     It will have the description "Download Youtube Videos".
     It will be bound to the "NVDA+alt+y"
     """
+    scriptCategory = _("Golden Cursor")
 
     #!#######################################################
     # ? THE SCRIPT STARTS EXCUTING FROM HERE
@@ -39,7 +40,11 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
             ui.message(_("The Script Has Started."))
 
             link = (info.text)
-            args = ["python", "original_script.py", link]
+            SCRIPT_PATH = sys.path[0]
+            MAIN_DOWNLOADER_FOLDER = "main_youtube_downloader"
+            original_script = os.path.join(SCRIPT_PATH, MAIN_DOWNLOADER_FOLDER,
+                                           "original_script.py")
+            args = ["python", original_script, link]
 
             Popen(" ".join(args), shell=True)  # download file
 
