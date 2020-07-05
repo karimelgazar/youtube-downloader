@@ -6,17 +6,16 @@ from ui import message
 import globalPluginHandler
 
 
-IDM_PATH, SCRIPT_PATH, PYTHON_PATH, DOWNLOAD_FOLDER, CHOOSE_TO_DOWNLOAD_VIDEO, VIDEO_QUALITY = [
+IDM_PATH, DOWNLOAD_FOLDER, CHOOSE_TO_DOWNLOAD_VIDEO, VIDEO_QUALITY = [
     None]*6
 
 LEVEL = ('144p', '240p', '360p', '480p', '720p')
-SCRIPT_PATH = sys.path[0]
-MAIN_DOWNLOADER_FOLDER = "main_youtube_downloader"
 
 
 class YoutubeDownloderSettings(wx.Dialog):
 
     def __init__(self, parent):
+        global IDM_PATH, DOWNLOAD_FOLDER, CHOOSE_TO_DOWNLOAD_VIDEO, VIDEO_QUALITY
 
         # TODO make option for dowbload audio only nothing else
         # TODO make option to select installed python path
@@ -111,6 +110,11 @@ class YoutubeDownloderSettings(wx.Dialog):
     #     message(_('rename'))
 
     def onClose(self, evt):
+        global IDM_PATH, DOWNLOAD_FOLDER, CHOOSE_TO_DOWNLOAD_VIDEO, VIDEO_QUALITY
+
+        SCRIPT_PATH = sys.path[0]
+        MAIN_DOWNLOADER_FOLDER = "main_youtube_downloader"
+
         CHOOSE_TO_DOWNLOAD_VIDEO = (not self.ACheckBox.IsChecked())
         chosen_index = self.WCombo.GetSelection()
         if chosen_index == 4:
