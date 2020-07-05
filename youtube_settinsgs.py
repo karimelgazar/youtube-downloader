@@ -112,7 +112,9 @@ class YoutubeDownloderSettings(wx.Dialog):
     def onClose(self, evt):
         global IDM_PATH, DOWNLOAD_FOLDER, CHOOSE_TO_DOWNLOAD_VIDEO, VIDEO_QUALITY
 
-        SCRIPT_PATH = sys.path[0]
+        SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
+        # SCRIPT_PATH = sys.path[0]
+
         MAIN_DOWNLOADER_FOLDER = "main_youtube_downloader"
 
         CHOOSE_TO_DOWNLOAD_VIDEO = (not self.ACheckBox.IsChecked())
