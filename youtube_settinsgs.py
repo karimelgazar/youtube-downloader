@@ -76,39 +76,40 @@ class YoutubeDownloderSettings(wx.Dialog):
         global IDM_PATH
         chosen = False
 
-        while not chosen:
-            # otherwise ask the user what new file to open
-            with wx.FileDialog(self, "Select idman.exe file", wildcard="*.exe",
-                               style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+        # while not chosen:
+        # otherwise ask the user what new file to open
+        with wx.FileDialog(self, "Select idman.exe file", wildcard="idman.exe",
+                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
-                if fileDialog.ShowModal() == wx.ID_CANCEL:
-                    sys.exit()
+            if fileDialog.ShowModal() == wx.ID_CANCEL:
+                sys.exit()
 
-                # if fileDialog.ShowModal() == wx.ID_OK:
-                #     chosen = True   # the user changed their mind
+            # if fileDialog.ShowModal() == wx.ID_OK:
+            #     chosen = True   # the user changed their mind
 
-                # Proceed loading the file chosen by the user
-                IDM_PATH = fileDialog.GetPath()
+            # Proceed loading the file chosen by the user
+            IDM_PATH = fileDialog.GetPath()
 
-                if "idman" not in IDM_PATH.lower():
-                    continue
+            if "idman" not in IDM_PATH.lower():
+                sys.exit()
+                # continue
 
     def on_choose_dir(self, event):
         global DOWNLOAD_FOLDER
         chosen = False
 
-        while not chosen:
-            # otherwise ask the user what new file to open
-            with wx.DirDialog(self, "Select Download Folder", defaultPath="",
-                              style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST) as folderDialog:
+        # while not chosen:
+        # otherwise ask the user what new file to open
+        with wx.DirDialog(self, "Select Download Folder", defaultPath="",
+                          style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST) as folderDialog:
 
-                if folderDialog.ShowModal() == wx.ID_CANCEL:
-                    sys.exit()
-                # if folderDialog.ShowModal() == wx.ID_OK:
-                #     chosen = True   # the user changed their mind
+            if folderDialog.ShowModal() == wx.ID_CANCEL:
+                sys.exit()
+            # if folderDialog.ShowModal() == wx.ID_OK:
+            #     chosen = True   # the user changed their mind
 
-                # Proceed loading the file chosen by the user
-                DOWNLOAD_FOLDER = folderDialog.GetPath()
+            # Proceed loading the file chosen by the user
+            DOWNLOAD_FOLDER = folderDialog.GetPath()
 
         # message(_('rename'))
 
