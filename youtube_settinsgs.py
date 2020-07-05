@@ -81,7 +81,7 @@ class YoutubeDownloderSettings(wx.Dialog):
             with wx.FileDialog(self, "Select idman.exe file", wildcard="*.exe",
                                style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
-                if fileDialog.ShowModal() == wx.wx.ID_CANCEL:
+                if fileDialog.ShowModal() == wx.ID_CANCEL:
                     sys.exit()
 
                 # if fileDialog.ShowModal() == wx.ID_OK:
@@ -102,7 +102,7 @@ class YoutubeDownloderSettings(wx.Dialog):
             with wx.DirDialog(self, "Select Download Folder", defaultPath="",
                               style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST) as folderDialog:
 
-                if folderDialog.ShowModal() == wx.wx.ID_CANCEL:
+                if folderDialog.ShowModal() == wx.ID_CANCEL:
                     sys.exit()
                 # if folderDialog.ShowModal() == wx.ID_OK:
                 #     chosen = True   # the user changed their mind
