@@ -7,7 +7,7 @@ import globalPluginHandler
 
 
 IDM_PATH, DOWNLOAD_FOLDER, CHOOSE_TO_DOWNLOAD_VIDEO, VIDEO_QUALITY = [
-    None]*6
+    None]*4
 
 LEVEL = ('144p', '240p', '360p', '480p', '720p')
 
