@@ -34,13 +34,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 
         if not info or info.isCollapsed:
             # Translators: This message is spoken if there's no selection.
-            ui.message(_("Nothing selected."))
+            message(_("Nothing selected."))
 
         else:
-            ui.message(_("The Script Has Started."))
+            message(_("The Script Has Started."))
 
             link = (info.text)
-            SCRIPT_PATH = sys.path[0]
+            # SCRIPT_PATH = sys.path[0]
+            SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
             MAIN_DOWNLOADER_FOLDER = "main_youtube_downloader"
             original_script = os.path.join(SCRIPT_PATH, MAIN_DOWNLOADER_FOLDER,
                                            "original_script.py")

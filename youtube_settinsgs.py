@@ -73,7 +73,7 @@ class YoutubeDownloderSettings(wx.Dialog):
         mainSizer.Fit(self)
 
     def on_choose_IDM(self, event):
-
+        global IDM_PATH
         chosen = False
 
         while not chosen:
@@ -81,8 +81,11 @@ class YoutubeDownloderSettings(wx.Dialog):
             with wx.FileDialog(self, "Select idman.exe file", wildcard="*.exe",
                                style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
-                if fileDialog.ShowModal() == wx.ID_OK:
-                    chosen = True   # the user changed their mind
+                if fileDialog.ShowModal() == wx.wx.ID_CANCEL:
+                    sys.exit()
+
+                # if fileDialog.ShowModal() == wx.ID_OK:
+                #     chosen = True   # the user changed their mind
 
                 # Proceed loading the file chosen by the user
                 IDM_PATH = fileDialog.GetPath()
@@ -91,6 +94,7 @@ class YoutubeDownloderSettings(wx.Dialog):
                     continue
 
     def on_choose_dir(self, event):
+        global DOWNLOAD_FOLDER
         chosen = False
 
         while not chosen:
@@ -98,8 +102,10 @@ class YoutubeDownloderSettings(wx.Dialog):
             with wx.DirDialog(self, "Select Download Folder", defaultPath="",
                               style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST) as folderDialog:
 
-                if folderDialog.ShowModal() == wx.ID_OK:
-                    chosen = True   # the user changed their mind
+                if folderDialog.ShowModal() == wx.wx.ID_CANCEL:
+                    sys.exit()
+                # if folderDialog.ShowModal() == wx.ID_OK:
+                #     chosen = True   # the user changed their mind
 
                 # Proceed loading the file chosen by the user
                 DOWNLOAD_FOLDER = folderDialog.GetPath()
