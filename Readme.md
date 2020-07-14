@@ -12,10 +12,10 @@
 # Youtube Downloader for the blind 👨‍🦯 and the sighted 🚶 
 Download Any Link whether a single video, a playlist, or a whole channel Using Internet Download Manger
 ## The Index
-[**NVDA Addon 👨‍🦯 (For the blind)**](#nvda-addon-) &nbsp;**|**&nbsp;
-[**Terminal Version 🚶 (for the sighted)**](#terminal-version-) &nbsp;**|**&nbsp;
-[**Settings File 📑**](#settings-file-) &nbsp;**|**&nbsp;
-[**Special Thanks 🤝**](#special-thanks-)
+[**NVDA Addon (For the blind)**](#nvda-addon-) &nbsp;**|**&nbsp;
+[**Terminal Version (for the sighted)**](#terminal-version-) &nbsp;**|**&nbsp;
+[**Settings File**](#settings-file-) &nbsp;**|**&nbsp;
+[**Special Thanks**](#special-thanks-)
 
 ## NVDA Addon 👨‍🦯
 🌟 You can download the addon from [this direct link](https://github.com/karimelgazar/youtube-downloader/releases/download/1.0.0/windows-youtubeDownloder-1.0.0.nvda-addon) <br>
