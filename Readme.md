@@ -63,7 +63,7 @@ on windows so after downloading your non-english titled videos you need to run `
 ## Settings File 📑
 🌟 This is a txt file that contains user configuration purpose of each line in the file (in order) as follows: 
 
-1. The path to the idman.exe file
+1. The path to the idman.exe file<br>
     ⚠ in future uptdates new dowloaders will be added like `Uget`
 2. The path where all downloads will be saved to.
 3. If you want to download in video format <br>
