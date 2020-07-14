@@ -23,12 +23,12 @@ Download Any Link whether a single video, a playlist, or a whole channel Using I
 🌟 The addon has `3 shortcuts`: <br>
 1. `alt+control+y` : "To Start Downloading The Seleceted Link"
 2. `alt+control+r` : "To Rename Non English Videos Titles To Its Orignal Ones After Downloadding",
-3. `alt+control+l` : "To Configure The Addon Settings",` 
+3. `alt+control+l` : "To Configure The Addon Settings"
 
 💁 How To Use:
 1. Choose the link you want to download whether a single video, a playlist, or a whole channel <br>
     ⚠ The channel url must ends with "/videos" 
-    so you need to select the videos tab in the channel page and then copy the url
+    so you need to select the videos tab in the channel page and then select the url
     
     ⚠ If you downloaded a single video it will be inside a folder this folder name 
     is the same as the original video title and same for channels or playlists
