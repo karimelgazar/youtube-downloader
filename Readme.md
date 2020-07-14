@@ -10,13 +10,13 @@
 <br> -->
 
 # Youtube Downloader for the blind 👨‍🦯 and the sighted 🚶 
-Download Any Link whether a single video, a playlist, or a whole channel
+Download Any Link whether a single video, a playlist, or a whole channel Using Internet Download Manger
 ## The Index
-[**NVDA Addon (For the blind)**](##1-NVDA-Addon) &nbsp;**|**&nbsp;
-[**The Terminal Version (for the sighted)**](##2-Terminal-Version) &nbsp;**|**&nbsp;
-[**Settings File**](##3-Settings-File) &nbsp;**|**&nbsp;
+[**NVDA Addon (For the blind)**](##1-nvda-addon) &nbsp;**|**&nbsp;
+[**The Terminal Version (for the sighted)**](##2-terminal-version) &nbsp;**|**&nbsp;
+[**Settings File**](##3-settings-file) &nbsp;**|**&nbsp;
 
-## NVDA Addon
+## NVDA Addon 👨‍🦯
 🌟 You can download the addon from [this direct link](https://github.com/karimelgazar/youtube-downloader/releases/download/1.0.0/windows-youtubeDownloder-1.0.0.nvda-addon) <br>
 
 🌟 The addon has `3 shortcuts`: <br>
@@ -25,7 +25,7 @@ Download Any Link whether a single video, a playlist, or a whole channel
 3. `alt+control+l` : "To Configure The Addon Settings",` 
 
 💁 How To Use:
-1. select the link you want to download whether a single video, a playlist, or a whole channel <br>
-    (⚠ the channel url must ends with "/videos" 
-    so you need to select the videos tab in the channel page and then copy the url)
-2. 
+1. Choose the link you want to download whether a single video, a playlist, or a whole channel <br>
+    ⚠ the channel url must ends with "/videos" 
+    so you need to select the videos tab in the channel page and then copy the url
+2. Press `ctrl+l` then `alt+control+y` and the download will begin in IDM
