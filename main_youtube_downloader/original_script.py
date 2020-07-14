@@ -1,4 +1,7 @@
 """
+The script accept one argument which is the link to download
+whether a single video, a playlist, or a whole channel
+
 #######################################################
 @Author: Karim Elgazar
 Contact ME:
@@ -46,6 +49,10 @@ from subprocess import Popen as pop
 from pprint import pprint
 import argparse
 
+IS_WINDOWS = (os.name == 'nt')
+if IS_WINDOWS:  # windows os
+    import winsound  # to play sound when adding new videos
+
 ID_INVALID = -1
 ID_VIDEO = 0
 ID_PLAYLIST = 1
@@ -61,9 +68,11 @@ RES_TO_NUM = {
     "360p": 3,
     "480p": 4
 }
-
 NUM_TO_RES = {v: k for (k, v) in RES_TO_NUM.items()}
-SETTINGS_FILE = os.path.join(sys.path[0], "settings.txt")
+
+
+SCRIPT_PATH = os.path.dirname(os.path.abspath(__file__))
+SETTINGS_FILE = os.path.join(SCRIPT_PATH, "settings.txt")
 with open(SETTINGS_FILE) as file:
     IDM_DIRECTORY, DOWNLOAD_FOLDER, CHOOSE_TO_DOWNLOAD_VIDEO, VIDEO_QUALITY = [
         line.strip() for line in file.readlines()]
@@ -86,15 +95,19 @@ IDM_DIRECTORY = f"\"{IDM_DIRECTORY}\""
 # p3 = "https://www.youtube.com/playlist?list=PL5tVJtjoxKzp6E5AiMdnL8rFqg5X0iDWX"
 # me = "https://www.youtube.com/watch?v=yGrg8IKjrLU"
 # pm = "https://www.youtube.com/watch?v=yGrg8IKjrLU&list=PLO1D3YWS7ep0yi84ANyK4yJMDmMon_j5t&index=6&t=75s"
-x = "https://www.youtube.com/watch?v=XA6bS8TyN10"
+# x = "https://www.youtube.com/watch?v=XA6bS8TyN10"
 # duck = "https://www.youtube.com/watch?v=nHc288IPFzk&list=PL_90hJucBAcPmFxcbTea81OKGkQevH2F9&index=3"
-channel = "https://www.youtube.com/user/thesmallglories/videos"
-ar_channel = "https://www.youtube.com/channel/UCxn_DMPZ37eSIXrVxBUc6AA/videos"
-
+# channel = "https://www.youtube.com/user/thesmallglories/videos"
+# ar_channel = "https://www.youtube.com/channel/UCxn_DMPZ37eSIXrVxBUc6AA/videos"
 
 #!========================================================================
-def type_of(link):
 
+
+def type_of(link):
+    """
+    return the constant corresponding to the link type
+    whether a single video, a playlist, or a whole channel
+    """
     if (BASE_LINK + "playlist") in link:
         return ID_PLAYLIST
 
@@ -108,6 +121,9 @@ def type_of(link):
 
 
 def isEnglish(s):
+    """
+    return False if the passed text is not English
+    """
     try:
         s.encode(encoding='utf-8').decode('ascii')
     except UnicodeDecodeError:
@@ -117,6 +133,10 @@ def isEnglish(s):
 
 
 def check_and_file_ext(title):
+    """
+    check if the video name is English and if not 
+    returns the default name + the extension according to the user settings
+    """
     # return the default title because IDM
     # doesn't accept unicode letters like arabic letters
     if title == UNKNOWN_NAME or (not isEnglish(title)):
@@ -144,7 +164,13 @@ def mkdir_and_chdir(name):
     os.chdir(name)
 
 
-def get_file_name_from(url):
+def get_folder_file_from(url):
+    """
+    create folder for a single video to download
+
+    Returns:
+        tuple : folder_name, file_valid_name
+    """
     with YoutubeDL({
         # Download single video instead of a playlist if in doubt.
         "noplaylist": True,
@@ -166,7 +192,7 @@ def get_file_name_from(url):
         with open(NANES_FILE, 'w') as file:
             file.write(original_name)
 
-        return valid_name
+        return title, "00-"+valid_name
 
 
 def download_with_IDM(direct_link=None, file_name=None,
@@ -183,7 +209,7 @@ def download_with_IDM(direct_link=None, file_name=None,
         links_txt  -- the txt file that has the direct links
         start      -- start the queue in IDM
     """
-    global IDM_DIRECTORY
+    global IDM_DIRECTORY, IS_WINDOWS
 
     no_questions = ' /n'
     add_to_queue = ' /a'
@@ -192,23 +218,18 @@ def download_with_IDM(direct_link=None, file_name=None,
         download_link = ' /d \"{}\"'.format(direct_link.strip())
         local_path = ' /p \"{}\"'.format(download_path.replace('/', '\\'))
         local_file_name = ' /f \"{}\"'.format(file_name.strip())
-        # file_name = re.sub(
-        #     r"[*:/<>?\|]", "_", file_name)
 
-        #! the program will name arabic files as WHY...????
+        #! the program will not accept name arabic files WHY...????
         #! Beacause windows doesn't support passing utf-8
-        #! parameters in the terminal so IDM will get the name wrong as ????
-
-        # ? change terminal code page to UTF-8 BUT DID NOT WORK EITHER
-        # change_terminal_to_utf_8 = "chcp 65001"
-        # pop(change_terminal_to_utf_8, shell=True)
+        #! parameters in the terminal so IDM will get the name like this "????"
 
         COMMAND = IDM_DIRECTORY + download_link + \
             local_path + local_file_name + no_questions + add_to_queue
 
-        print(COMMAND, start, sep='\n')
-        print('='*50)
+        # print(COMMAND, start, sep='\n')
+        # print('='*50)
         pop(COMMAND, shell=True)  # download file
+
     except:
         pass
 
@@ -217,9 +238,26 @@ def download_with_IDM(direct_link=None, file_name=None,
     if start:
         # print('STARTED')
         pop(IDM_DIRECTORY + start_queue, shell=True)
+        # ? video downloading has started
+        if IS_WINDOWS:
+            winsound.PlaySound(os.path.join(
+                SCRIPT_PATH, "sounds", "done.wav"), winsound.SND_ASYNC)
 
 
 def get_direct_link(url):
+    """
+    start extracting the direct link of the given video link
+    returns the video direct link to download.
+
+    NOTE: pytube was used because it returns a direct link of video with the audio 
+    included while youtubedl requires ffmpeg to combine video and audio.
+    """
+
+    # ? adding new video but didn't download yet
+    if IS_WINDOWS:
+        winsound.PlaySound(os.path.join(
+            SCRIPT_PATH, "sounds", "start.wav"), winsound.SND_ASYNC)
+
     video = YouTube(url)
     stream = None
     if not CHOOSE_TO_DOWNLOAD_VIDEO:
@@ -258,6 +296,14 @@ def get_direct_link(url):
 
 
 def download_multiple_videos(pl_ch_object, name):
+    """
+    download multiple video in the given playlist or channel object
+    in the given folder name
+
+    Args:
+        pl_ch_object (YoutubeDL object): the given playlist or channel object
+        name (str): the given folder name
+    """
     with open(NANES_FILE, "w") as file:
         for i, video in enumerate(pl_ch_object.get('entries')):
             link_video, title = None, UNKNOWN_NAME
@@ -270,6 +316,7 @@ def download_multiple_videos(pl_ch_object, name):
             except:
                 continue
 
+            # ? preparing parameters for IDM
             title = safe_filename(title)
             download_link = get_direct_link(link_video)
             valid_name = str(i + 1).zfill(2) + "-" + check_and_file_ext(title)
@@ -277,6 +324,7 @@ def download_multiple_videos(pl_ch_object, name):
                 title + valid_name[-4:] + "\n"
 
             file.write(original_name)
+            # ? add video to IDM queue
             download_with_IDM(direct_link=download_link,
                               file_name=valid_name,
                               download_path=os.path.join(DOWNLOAD_FOLDER,
@@ -287,6 +335,11 @@ def download_multiple_videos(pl_ch_object, name):
 
 
 def download_playlist(url):
+    """
+    download the whole playlist of the given url
+    NOTE: youtubedl was used instead of pytube because it gives stable result
+    and that's because pytube sometimes didn't return the correct name of the given link
+    """
     ydl = YoutubeDL({
         # this line is VERY IMPORTANT because if there's private viedeos
         # or anything unavilable to download youtube-dl won't crash
@@ -309,6 +362,12 @@ def download_playlist(url):
 
 
 def download_channel(url):
+    """
+    download the whole channel of the given url (the url must ends with "/videos" 
+    so you need to select the videos tab in the channel page and then copy the url 
+    NOTE: youtubedl was used instead of pytube because it gives stable result
+    and that's because pytube sometimes didn't return the correct name of the given link
+    """
     ydl = YoutubeDL({
         # this line is VERY IMPORTANT because if there's private viedeos
         # or anything unavilable to download youtube-dl won't crash
@@ -327,13 +386,11 @@ def download_channel(url):
             download=False  # We just want to extract the info
         )
 
-    print("="*50)
-
     # original output without split is "Uploads from CHANNEL_NAME" (quotes not included)
     # so we need to split and pick the last item
     name_channel = safe_filename(channel.get("title").split(' from ')[-1])
-    print(name_channel)
-    print("="*50)
+    # print(name_channel)
+    # print("="*50)
     mkdir_and_chdir(name_channel)
     download_multiple_videos(channel, name_channel)
 
@@ -344,6 +401,7 @@ def get_link_from_terminal():
     """
 
     # ? تجهيز الترمينال
+    # ? prepare terminal
     parser = argparse.ArgumentParser()
     arg_help = '''
             The Link To The Video, Playlist, Or Channel'''
@@ -353,7 +411,8 @@ def get_link_from_terminal():
 
     passed_link = parser.parse_args().link
 
-    return passed_link.strip()
+    # ? remove white spaces and "\" symbol
+    return passed_link.strip().replace("\\", "")
 
 
 def check_link_and_download():
@@ -365,9 +424,11 @@ def check_link_and_download():
 
     elif link_id == ID_VIDEO:
         download_link = get_direct_link(url)
-        name = get_file_name_from(url)
+        foldername, name = get_folder_file_from(url)
         download_with_IDM(direct_link=download_link,
                           file_name=name,
+                          download_path=os.path.join(DOWNLOAD_FOLDER,
+                                                     foldername),
                           start=True)
         return
 
